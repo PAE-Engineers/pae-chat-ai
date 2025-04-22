@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PAE Chat AI</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+      max-width: 800px;
+    }
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+    #chat {
+      border: 1px solid #ccc;
+      padding: 1em;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 1em;
+      background: #fafafa;
+    }
+    .msg {
+      margin-bottom: 0.5em;
+    }
+    .user {
+      font-weight: bold;
+    }
+    .bot {
+      color: darkgreen;
+    }
+    textarea {
+      width: 80%;
+      max-width: 400px;
+      resize: vertical;
+      padding: 0.5em;
+    }
+    button {
+      margin-left: 1em;
+      padding: 0.5em 1em;
+    }
+  </style>
+</head>
+<body>
+  <h2>PAE Chat AI</h2>
+  <div id="chat"></div>
+  <textarea id="prompt" placeholder="Type your question..." rows="2"></textarea>
+  <button onclick="send()">Ask Azure AI</button>
+
+  <script>
+    async function send() {
+      const promptBox = document.getElementById('prompt');
+      const chatBox = document.getElementById('chat');
+      const prompt = promptBox.value.trim();
+      if (!prompt) return;
+
+      chatBox.innerHTML += `<div class="msg"><span class="user">You:</span> ${prompt}</div>`;
+      promptBox.value = '';
+
+      try {
+        const res = await fetch('https://your-api-url.com/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        const answer = data.answer || 'No response from AI.';
+        chatBox.innerHTML += `<div class="msg"><span class="bot">AI:</span> ${answer}</div>`;
+      } catch (err) {
+        chatBox.innerHTML += `<div class="msg"><span class="bot">AI:</span> ❌ Error contacting the AI service.</div>`;
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
